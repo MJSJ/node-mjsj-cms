@@ -1,9 +1,6 @@
 {
-  "name": "koa-examples",
-  "description": "Examples using Koa",
+  "name": "node-mjsj-cms",
   "version": "0.0.1",
-  "repository": "https://github.com/koajs/examples",
-  "bugs": "https://github.com/koajs/examples/issues",
   "dependencies": {
     "ejs": "^2.5.6",
     "fs-promise": "^2.0.3",
