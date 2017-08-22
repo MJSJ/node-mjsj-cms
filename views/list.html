@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <% include ../lib/data.html %>
+</head>
+<body>
+
+  
+  <p>登录的信息放在<span style="color:red">window._DATA</span>里</p>
+  <h1 id="a">hello:</h1>
+
+  <script>
+    document.getElementById("a").innerHTML+=window._DATA.name;
+  </script>
+</body>
+</html>
