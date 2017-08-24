@@ -9,12 +9,13 @@
 </head>
 <body>
 
-  
-  <p>登录的信息放在<span style="color:red">window._DATA</span>里</p>
-  <h1 id="a">hello:</h1>
-
-  <script>
-    document.getElementById("a").innerHTML+=window._DATA.name;
-  </script>
+<script>
+  var xmlHttp = new XMLHttpRequest();
+  xmlHttp.open("POST",'http://localhost:8081/api/test',true);
+  var data = new FormData();
+  data.append('csrf', window._DATA._csrf);
+  xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");  
+  xmlHttp.send('csrf='+window._DATA._csrf);
+</script>
 </body>
 </html>
