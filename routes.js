@@ -1,7 +1,7 @@
 
 
 const conf = {
-    '/':'list',
+    '/page/p1':'list',
     '/login':'login',
 }
 
