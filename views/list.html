@@ -11,11 +11,9 @@
 
 <script>
   var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("POST",'http://localhost:8081/api/test',true);
-  var data = new FormData();
-  data.append('csrf', window._DATA._csrf);
+  xmlHttp.open("POST",'/api/test',true);
   xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");  
-  xmlHttp.send('csrf='+window._DATA._csrf);
+  xmlHttp.send('_csrf='+window._DATA._csrf);
 </script>
 </body>
 </html>

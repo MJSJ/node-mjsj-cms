@@ -2,7 +2,7 @@
 
 const conf = {
     '/':'list',
-    '/login':'login'
+    '/login':'login',
 }
 
 module.exports = conf;
