@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>报价</title>
+    <link href="https://cdn.bootcss.com/element-ui/1.4.2/theme-default/index.css" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <template>
+            <el-table :data="tableData" style="width: 100%">
+                <el-table-column prop="date" label="名称" width="180">
+                </el-table-column>
+                <el-table-column prop="des" label="需求描述" width="180">
+                </el-table-column>
+                <el-table-column prop="type" label="类型" width="180">
+                </el-table-column>
+                <el-table-column prop="price" label="报价">
+                </el-table-column>
+                <el-table-column prop="days" label="工期">
+                </el-table-column>
+            </el-table>
+        </template>
+    </div>
+    <script src="https://cdn.bootcss.com/vue/2.4.2/vue.min.js"></script>
+    <script src="https://cdn.bootcss.com/element-ui/1.4.2/index.js"></script>
+    <script>
+        (function(){
+            var Main = {
+                data() {
+                    return {
+                        tableData: [{
+                            date: '宣传网站',
+                            des: '2-3页的宣传网站，',
+                            type: 'PC站',
+                            price: '1500',
+                            days: 3
+                        }]
+                    }
+                }
+            }
+            var Ctor = Vue.extend(Main)
+            new Ctor().$mount('#app')
+        })();
+    </script>
+</body>
+</html>
