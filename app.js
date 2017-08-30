@@ -111,7 +111,7 @@ router.get('/cms/login', async function(ctx) {
 router.get('/cms', async function(ctx) {
     let u = ctx.session.user || null;
     if (u){
-        if(u.mm === "1") {
+        if(u.mm === "0") {
             ctx.session.user = null;
         }
         await ctx.render('./page/cms', {_csrf: ctx.csrf, u: u});
