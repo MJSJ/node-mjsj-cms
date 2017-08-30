@@ -8,13 +8,14 @@
     <% include ../lib/data.html %>
 </head>
 <body>
-
-  login
-  <p>登录的信息放在<span style="color:red">window._DATA</span>里</p>
-  <h1 id="a">hello:</h1>
-
+  <form action="/login" method="POST">
+    <input type="text" name="username"/>
+    <input type="password" name="password"/>
+    <input id="token" name="_csrf" type="hidden"/>
+    <input type="submit"/>
+  </form>
   <script>
-    document.getElementById("a").innerHTML+=window._DATA.name;
+    document.getElementById("token").value=window._DATA._csrf;
   </script>
 </body>
 </html>

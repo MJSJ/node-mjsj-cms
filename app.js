@@ -44,7 +44,8 @@ const router = require('koa-router')();
 router.post(/^\/api(?:\/|$)/, async function(ctx){
     await axios({
         method: 'POST',
-        url: SERVER_PATH + ctx.path
+        url: SERVER_PATH + ctx.path,
+        data: ctx.request.body
     })
     .then(function (res) {
         if(res.data){
@@ -73,24 +74,44 @@ router.get(/^\/api(?:\/|$)/, async function(ctx){
     });
 });
 
+// cms login
+router.post('/login', async function(ctx){
+    let u = ctx.session.user || ctx.cookies.get('u');
+    if (!u){
+        await axios({
+            method: 'POST',
+            url: SERVER_PATH + ctx.path,
+            data: ctx.request.body
+        })
+        .then(function (res) {
+            if(res.data.success){
+                ctx.session.user = res.data.user;
+                ctx.redirect('/cms');
+            } else {
+                ctx.redirect('/login', {msg: '登录失败'});
+            }
+        }).catch(function(res){
+            console.log('接口异常:' + res);
+        });
+    } else {
+        ctx.redirect('/cms');
+    }
+});
+
+// cms
+router.get('/cms', async function(ctx) {
+    let u = ctx.session.user || ctx.cookies.get('u');
+    if (u){
+        await ctx.render('./page/cms', {_csrf: ctx.csrf, u: u});
+    } else {
+        ctx.redirect('/login');
+    }
+});
+
 // 页面router
 for (let i in conf){
     router.get(i, async function(ctx) {
-        // send token to api-server
-        // ctx.cookies.set('id', '1503564961521', { signed: true });
-        // axios({
-        //     method: 'get',
-        //     url: 'http://127.0.0.1:8081/api/setToken',
-        //     params: {
-        //         csrf: ctx.csrf
-        //     }
-        // }).then(function (response) {})
-        // .catch(function (error) {
-        //     console.log(error.config.url+'出错: '+error.response.status);
-        // });
-
-        // set token in views
-        await ctx.render(conf[i], {_csrf: ctx.csrf});
+        await ctx.render(conf[i], {_csrf: ctx.csrf, u: null});
     });
 }
 

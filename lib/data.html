@@ -1,5 +1,6 @@
 <script>
 window._DATA = {
-    _csrf:`<%= _csrf %>`
+    _csrf:`<%= _csrf %>`,
+    u: JSON.parse('<%- JSON.stringify(u) %>')
 };
 </script>

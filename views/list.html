@@ -11,9 +11,9 @@
 
 <script>
   var xmlHttp = new XMLHttpRequest();
-  xmlHttp.open("POST",'/api/test',true);
+  xmlHttp.open("POST",'/login',true);
   xmlHttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");  
-  xmlHttp.send('_csrf='+window._DATA._csrf);
+  xmlHttp.send('username=1&password=1&_csrf='+window._DATA._csrf);
 </script>
 </body>
 </html>
