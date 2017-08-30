@@ -74,10 +74,11 @@ router.get(/^\/api(?:\/|$)/, async function(ctx){
     });
 });
 
-// cms login
-router.post('/login', async function(ctx){
-    let u = ctx.session.user || ctx.cookies.get('u');
-    if (!u){
+// cms login post
+router.post('/cms/login', async function(ctx){
+    if (ctx.session.user){
+        ctx.redirect('/cms');
+    } else {
         await axios({
             method: 'POST',
             url: SERVER_PATH + ctx.path,
@@ -86,25 +87,36 @@ router.post('/login', async function(ctx){
         .then(function (res) {
             if(res.data.success){
                 ctx.session.user = res.data.user;
+                ctx.session.user.mm = ctx.request.body.memberMe
                 ctx.redirect('/cms');
             } else {
-                ctx.redirect('/login', {msg: '登录失败'});
+                ctx.redirect('/cms/login', {msg: '登录失败'});
             }
         }).catch(function(res){
             console.log('接口异常:' + res);
         });
-    } else {
+    }
+});
+
+// cms login page
+router.get('/cms/login', async function(ctx) {
+    if (ctx.session.user){
         ctx.redirect('/cms');
+    } else {
+        await ctx.render('./login', {_csrf: ctx.csrf, u: null});
     }
 });
 
 // cms
 router.get('/cms', async function(ctx) {
-    let u = ctx.session.user || ctx.cookies.get('u');
+    let u = ctx.session.user || null;
     if (u){
+        if(u.mm === "1") {
+            ctx.session.user = null;
+        }
         await ctx.render('./page/cms', {_csrf: ctx.csrf, u: u});
     } else {
-        ctx.redirect('/login');
+        ctx.redirect('/cms/login');
     }
 });
 
