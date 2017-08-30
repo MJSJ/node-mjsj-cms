@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>login</title>
+    <title>登录</title>
     <% include ../lib/data.html %>
 </head>
 <body>
-  <form action="login" method="POST">
+  <form id="loginForm" action="login" method="POST">
     <input type="text" name="username"/>
     <input type="password" name="password"/>
-    <input type="hidden" name="memberMe" value="1"/>
+    <input type="checkbox" name="remember" value="1" checked="checked" /> 记住我
     <input id="token" name="_csrf" type="hidden"/>
     <input type="submit"/>
   </form>
