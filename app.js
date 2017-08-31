@@ -6,6 +6,9 @@ const session = require('koa-generic-session');
 const convert = require('koa-convert');
 const CSRF = require('koa-csrf');
 const axios = require('axios');
+const os = require('os');
+const path = require('path');
+const fs = require('fs');
 
 const Koa = require('koa');
 const app = module.exports = new Koa();
@@ -20,17 +23,17 @@ app.keys = [ 'a', 'b' ];
 app.use(convert(session()));
 
 // add body parsing
-app.use(koaBody());
+app.use(koaBody({multipart: true}));
 
 // add the CSRF middleware
-app.use(new CSRF({
-    invalidSessionSecretMessage: 'Invalid session secret',
-    invalidSessionSecretStatusCode: 403,
-    invalidTokenMessage: 'Invalid CSRF token',
-    invalidTokenStatusCode: 403,
-    excludedMethods: [ 'GET' ],
-    disableQuery: false
-}));
+// app.use(new CSRF({
+//     invalidSessionSecretMessage: 'Invalid session secret',
+//     invalidSessionSecretStatusCode: 403,
+//     invalidTokenMessage: 'Invalid CSRF token',
+//     invalidTokenStatusCode: 403,
+//     excludedMethods: [ 'GET' ],
+//     disableQuery: false
+// }));
 
 // axios interceptors
 axios.interceptors.response.use(function (rs) {
@@ -39,6 +42,19 @@ axios.interceptors.response.use(function (rs) {
 
 // routes
 const router = require('koa-router')();
+
+router.post('/batchUpload', async function(ctx){
+    // ignore non-POSTs
+    if ('POST' != ctx.method) return await next();
+    
+    const file = ctx.request.body.files.file;
+    const reader = fs.createReadStream(file.path);
+    const stream = fs.createWriteStream(path.join(__dirname, 'static', file.name));
+    reader.pipe(stream);
+    console.log('uploading %s -> %s', file.name, stream.path);
+
+    ctx.redirect('/page/upload');
+});
 
 // api转发
 router.post(/^\/api(?:\/|$)/, async function(ctx){
