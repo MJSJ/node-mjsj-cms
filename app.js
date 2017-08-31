@@ -87,7 +87,7 @@ router.post('/cms/login', async function(ctx){
         .then(function (res) {
             if(res.data.success){
                 ctx.session.user = res.data.user;
-                ctx.session.user.mm = ctx.request.body.remember
+                ctx.session.user.mm = ctx.request.body.remember || "0";
                 ctx.redirect('/cms');
             } else {
                 ctx.redirect('/cms/login', {msg: '登录失败'});
@@ -111,9 +111,10 @@ router.get('/cms/login', async function(ctx) {
 router.get('/cms', async function(ctx) {
     let u = ctx.session.user || null;
     if (u){
-        if(u.mm === "1") {
+        if(u.mm === "0") {
             ctx.session.user = null;
         }
+        delete u.mm;
         await ctx.render('./page/cms', {_csrf: ctx.csrf, u: u});
     } else {
         ctx.redirect('/cms/login');
