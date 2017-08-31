@@ -66,7 +66,8 @@ router.post('/batchUpload', async function(ctx){
             })
             .on('end', function(){
                 console.log("end!");
-                // TODO: https://github.com/EvanOxfeld/node-unzip/issues/21
+                // TODO: 解压成功后删除zip文件
+                // https://github.com/EvanOxfeld/node-unzip/issues/21
                 ctx.body = {
                     success: true,
                     data: files
