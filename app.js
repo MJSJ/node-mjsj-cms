@@ -87,7 +87,7 @@ router.post('/cms/login', async function(ctx){
         .then(function (res) {
             if(res.data.success){
                 ctx.session.user = res.data.user;
-                ctx.session.user.mm = ctx.request.body.memberMe
+                ctx.session.user.mm = ctx.request.body.remember
                 ctx.redirect('/cms');
             } else {
                 ctx.redirect('/cms/login', {msg: '登录失败'});
