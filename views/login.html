@@ -6,14 +6,74 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>login</title>
     <% include ../lib/data.html %>
+    <style>
+      *{ padding:0;margin: 0; }
+      html,body{
+          width: 100%;
+          height: 100%;
+          min-height: 600px;
+          background: #eee !important;
+      }
+      #loginForm{
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          padding: 15px 35px 45px;
+          background: #fff;
+          width: 308px;
+          height: 300px;
+          text-align: center;
+          position: absolute;
+          left: 0;
+          top: 100px;
+          right: 0;
+          margin: auto;
+          }
+      .form_s{
+          padding-top: 20px;
+          padding-right: 222px;
+          font-weight: normal;
+          margin-bottom: 30px;
+      }
+      .form_com{
+          position: relative;
+          font-size: 16px;
+          height: auto;
+          padding: 11px;
+          width: 270px;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+      }
+      .form_box{
+          position: relative;
+          font-weight: normal;
+          font-size: 4px;
+          top: 30px;
+          right: 120px;
+      }
+      .btn{
+          position: relative;
+          width: 290px;
+          top: 60px;
+          color: #fff;
+          background-color: #428bca;
+          border-color: #357ebd;    
+          padding: 10px 16px;
+          font-size: 18px;
+          line-height: 1.33;
+          border-radius: 6px;
+          border: 1px solid #398bfb;
+      }
+    </style>
 </head>
 <body>
-  <form action="login" method="POST">
-    <input type="text" name="username"/>
-    <input type="password" name="password"/>
-    <input type="hidden" name="memberMe" value="1"/>
+  <form id="loginForm" action="login" method="POST">
+    <h2 class="form_s" >请登录</h2>
+    <input type="text" class="form_com" placeholder="账户名" name="username">
+    <input type="password" class="form_com" placeholder="密码" name="password">
+    <label class="form_box">
+      <input type="checkbox"  class="form_cc" name="remember" value="1" checked="checked" > 记住我
+    </label>
     <input id="token" name="_csrf" type="hidden"/>
-    <input type="submit"/>
+    <input type="submit"  class="btn" value="登录" class="btn_su">
   </form>
   <script>
     document.getElementById("token").value=window._DATA._csrf;
