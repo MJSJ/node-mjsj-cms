@@ -10,13 +10,29 @@
 <body>
     <h1>File Upload</h1>
     <p>Try uploading multiple files at a time.</p>
-    <form action="../batchUpload" method="post" enctype="multipart/form-data">
+    <form id="uploadForm" action="../cms/batchUpload" method="post" enctype="multipart/form-data">
         <input id="token" name="_csrf" type="hidden"/>
-      <input type="file" name="file" multiple>
-      <input type="submit" value="Upload">
+        <input type="file" name="file" multiple>
+        <input type="submit" value="Upload" id="inputBtn">
     </form>
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
     <script>
         document.getElementById("token").value=window._DATA._csrf;
+        $('#inputBtn').on('click', function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            $.ajax({
+                url: $('#uploadForm').attr('action'),
+                method: 'POST',
+                cache: false,
+                data: new FormData($('#uploadForm')[0]),
+                processData: false,
+                contentType: false,
+                success: function(data){
+                    
+                }
+            });
+        });
     </script>
 </body>
 </html>

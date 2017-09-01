@@ -6,16 +6,13 @@ const session = require('koa-generic-session');
 const convert = require('koa-convert');
 const CSRF = require('koa-csrf');
 const axios = require('axios');
-const os = require('os');
-const path = require('path');
-const fs = require('fs');
-const unzip = require('unzip');
+
 
 const Koa = require('koa');
 const app = module.exports = new Koa();
 
 const SERVER_PATH = 'http://127.0.0.1:8081';
-const STATIC_PATH = path.join(__dirname, 'static');
+const upload = require('./upload');
 
 app.use(logger());
 
@@ -46,41 +43,8 @@ axios.interceptors.response.use(function (rs) {
 // routes
 const router = require('koa-router')();
 
-router.post('/batchUpload', async function(ctx){
-    // ignore non-POSTs
-    if ('POST' != ctx.method) return await next();
-    try{
-        let files = [];
-        // save zip file in ./static
-        const file = ctx.request.body.files.file;
-        const reader = fs.createReadStream(file.path);
-        const stream = fs.createWriteStream(path.join(STATIC_PATH, file.name));
-        reader.pipe(stream)
-        .on('close', function() {
-            // unzip files in ./static
-            fs.createReadStream(stream.path)
-            .pipe(unzip.Parse())
-            .on('entry', function (entry) {
-                files.push(path.join(STATIC_PATH, entry.path));
-                entry.pipe(fs.createWriteStream(path.join(STATIC_PATH, entry.path)));
-            })
-            .on('end', function(){
-                console.log("end!");
-                // TODO: 解压成功后删除zip文件
-                // https://github.com/EvanOxfeld/node-unzip/issues/21
-                ctx.body = {
-                    success: true,
-                    data: files
-                };
-            });
-        });
-    } catch (e) {
-        ctx.body = { 
-            success: false,
-            data: e
-        }
-    }
-});
+// upload
+router.post('/cms/batchUpload', upload);
 
 // api转发
 router.post(/^\/api(?:\/|$)/, async function(ctx){
