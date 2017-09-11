@@ -10,7 +10,7 @@
 <body>
     <h1>File Upload</h1>
     <p>Try uploading multiple files at a time.</p>
-    <form id="uploadForm" action="../cms/batchUpload" method="post" enctype="multipart/form-data">
+    <form id="uploadForm" action="../batchUpload" method="post" enctype="multipart/form-data">
         <input id="token" name="_csrf" type="hidden"/>
         <input type="file" name="file" multiple>
         <input type="submit" value="Upload" id="inputBtn">

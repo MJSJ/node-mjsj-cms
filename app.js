@@ -44,7 +44,7 @@ axios.interceptors.response.use(function (rs) {
 const router = require('koa-router')();
 
 // upload
-router.post('/cms/batchUpload', upload);
+router.post('/batchUpload', upload);
 
 // api转发
 router.post(/^\/api(?:\/|$)/, async function(ctx){

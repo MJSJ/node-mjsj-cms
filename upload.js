@@ -11,26 +11,35 @@ const os = require('os');
 const path = require('path');
 const fs = require('fs');
 const unzip = require('unzipper');
-const STATIC_PATH = path.join(__dirname, 'static');
+const STATIC_PATH = path.join(__dirname, '../static');
 
 function saveZipFile (ctx) {
     return new Promise((resolve, reject)=>{
         let files = [];
-        // save zip file in ./static
         const file = ctx.request.body.files.file;
+
+        // mkdir as /static/filename
+        let DEST = path.join(STATIC_PATH, file.name.split('.')[0]);
+        if(!fs.existsSync(DEST)){
+            fs.mkdirSync(DEST);
+        }
+
+        // save zip file in /static
         const reader = fs.createReadStream(file.path);
-        const stream = fs.createWriteStream(path.join(STATIC_PATH, file.name));
+        const stream = fs.createWriteStream(path.join(DEST, file.name));
         reader.pipe(stream)
         .on('close', function(){
             resolve({
                 success: true,
-                data: stream.path
+                data: stream.path,
+                dest: DEST
             });
         })
         .on('erorr', function(e){
             reject({
                 success: false,
-                data: e
+                data: e,
+                dest: DEST
             });
         });
     }).then(result=>result)
@@ -39,16 +48,15 @@ function saveZipFile (ctx) {
     });
 }
 
-function unzipFile (filePath, ctx) {
+function unzipFile (filePath, dest, ctx) {
     // unzip files in static
     let files = [];
-
     return fs.createReadStream(filePath)
         .pipe(unzip.Parse())
         .on('entry', function (entry) {
             let parts = entry.path.split(/\//);
             let fileName = parts[parts.length - 1];
-            let destFileName = path.join(STATIC_PATH, fileName); //保存的完整文件名
+            let destFileName = path.join(dest, fileName); //保存的完整文件名
 
             if(!fs.existsSync(destFileName)){
                 entry.pipe(fs.createWriteStream(destFileName));
@@ -79,7 +87,7 @@ async function upload (ctx) {
     let save = await saveZipFile(ctx);
     if(save.success){
         // save zip file success
-        ctx.body = await unzipFile(save.data, ctx);
+        ctx.body = await unzipFile(save.data, save.dest, ctx);
     }
 }
 
