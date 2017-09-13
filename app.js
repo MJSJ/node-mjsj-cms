@@ -6,7 +6,7 @@ const session = require('koa-generic-session');
 const convert = require('koa-convert');
 const CSRF = require('koa-csrf');
 const axios = require('axios');
-
+axios.defaults.withCredentials = true;
 
 const Koa = require('koa');
 const app = module.exports = new Koa();
@@ -87,6 +87,7 @@ router.post('/cms/login', async function(ctx){
     } else {
         await axios({
             method: 'POST',
+            withCredentials: true,
             url: SERVER_PATH + ctx.path,
             data: ctx.request.body
         })
@@ -109,6 +110,7 @@ router.get('/cms/login', async function(ctx) {
     if (ctx.session.user){
         ctx.redirect('/cms');
     } else {
+        ctx.cookies.set('koa.sid', +new Date());
         await ctx.render('./login', {_csrf: ctx.csrf, u: null});
     }
 });

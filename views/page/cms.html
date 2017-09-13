@@ -6,8 +6,25 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>cms主页</title>
     <% include ../../lib/data.html %>
+
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.1/jquery.min.js"></script>
 </head>
 <body>
-    
+    <script>
+        function getList(){
+            $.ajax({
+                url:"http://localhost:8081/cms/fetchSubjectList",
+                method:"GET",
+                dataType:'json',
+                xhrFields: {
+                    withCredentials: true
+                },
+                contentType:"application/json;charset=UTF-8"
+            }).then(function(data){
+                console.log(data)
+            })
+        }
+        getList();
+    </script>
 </body>
 </html>
