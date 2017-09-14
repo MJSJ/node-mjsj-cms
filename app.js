@@ -5,8 +5,7 @@ const koaBody = require('koa-body');
 const session = require('koa-generic-session');
 const convert = require('koa-convert');
 const CSRF = require('koa-csrf');
-const axios = require('axios');
-axios.defaults.withCredentials = true;
+const request = require('request');
 
 const Koa = require('koa');
 const app = module.exports = new Koa();
@@ -35,73 +34,56 @@ app.use(koaBody({multipart: true}));
 //     disableQuery: false
 // }));
 
-// axios interceptors
-axios.interceptors.response.use(function (rs) {
-    return rs.data;
-});
-
 // routes
 const router = require('koa-router')();
 
 // upload
 router.post('/batchUpload', upload);
 
-// api转发
-router.post(/^\/api(?:\/|$)/, async function(ctx){
-    await axios({
-        method: 'POST',
-        url: SERVER_PATH + ctx.path,
-        data: ctx.request.body
-    })
-    .then(function (res) {
-        if(res.data){
-            ctx.body = res;
-        } else {
-            ctx.body = '接口错误:' + res.status;
-        }
-    }).catch(function(res){
-        console.log('接口异常:' + res);
-    });
-});
+// requst
+function send (url, ctx) {
+    return new Promise((resolve, reject)=>{
+        var options = {
+            method: 'POST',
+            url: url,
+            headers: { 
+                'User-Agent': 'request',
+                'Cookie': `koa.sid=${ctx.cookies.get('koa.sid')}`
+            },
+            form: ctx.request.body,
+        };
 
-router.get(/^\/api(?:\/|$)/, async function(ctx){
-    axios({
-        method: 'GET',
-        url: SERVER_PATH + ctx.path
-    })
-    .then(function (res) {
-        if(res.success){
-            ctx.body = res;
-        } else {
-            ctx.body = '接口错误:' + res;
-        }
-    }).catch(function(res){
-        console.log('接口异常:' + res);
-    });
-});
+        request.post(options, function(err,httpResponse,body){ 
+            if (err) {
+                reject({
+                    success: false,
+                    data: err
+                });
+            } else {
+                resolve({
+                    success: true,
+                    data: body,
+                    setCookie: httpResponse.headers['set-cookie']
+                });
+            }
+        });
+    }).then(rs=>rs).catch(e=>e);
+}
 
 // cms login post
 router.post('/cms/login', async function(ctx){
     if (ctx.session.user){
         ctx.redirect('/cms');
     } else {
-        await axios({
-            method: 'POST',
-            withCredentials: true,
-            url: SERVER_PATH + ctx.path,
-            data: ctx.request.body
-        })
-        .then(function (res) {
-            if(res.data.success){
-                ctx.session.user = res.data.user;
-                ctx.session.user.mm = ctx.request.body.remember || "0";
-                ctx.redirect('/cms');
-            } else {
-                ctx.redirect('/cms/login', {msg: '登录失败'});
-            }
-        }).catch(function(res){
-            console.log('接口异常:' + res);
-        });
+        var response = await send('http://localhost:8081/cms/login', ctx);
+        if(response.success){
+            ctx.session.user = response.data;
+            ctx.session.user.mm = ctx.request.body.remember || "0";
+            ctx.headers['set-cookie'] = response.setCookie;
+            ctx.redirect('/cms');
+        } else {
+            ctx.redirect('/cms/login', {msg: '登录失败'});
+        }
     }
 });
 
@@ -141,4 +123,4 @@ app.use(render);
 app.use(router.routes());
 
 // listen
-if (!module.parent) app.listen(3000);
+if (!module.parent) app.listen(2999);

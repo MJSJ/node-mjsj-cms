@@ -78,24 +78,26 @@
   </form>
   <script>
     document.getElementById("token").value=window._DATA._csrf;
-    $("#loginBtn").click(function(e){
-        e.preventDefault();
-        e.stopPropagation();
-        $.ajax({
-            url:"http://www.mykrystal.com/cms/login",
-            method:"POST",
-            // data:JSON.stringify({username:"juan-manuel@fangio.com",password:"aa"}),//错误密码
-            data:JSON.stringify({username:$("#username").val(),password:$("password").val()}),//正确密码
-            dataType:'json',
-            xhrFields: {
-                withCredentials: true
-            },
-            contentType:"application/json;charset=UTF-8",
-            success (data) {
-                $("#loginForm").submit();
-            }
-        });
-    });
+    // $("#loginBtn").click(function(e){
+    //     e.preventDefault();
+    //     e.stopPropagation();
+    //     $.ajax({
+    //         url:"http://mykrystal.com/cms/login",
+    //         method:"POST",
+    //         // data:JSON.stringify({username:"juan-manuel@fangio.com",password:"aa"}),//错误密码
+    //         data:JSON.stringify({username:$("#username").val(),password:$("password").val()}),//正确密码
+    //         dataType:'json',
+    //         xhrFields: {
+    //             withCredentials: true
+    //         },
+    //         contentType:"application/json;charset=UTF-8",
+    //         success (data) {
+    //             if(data.success){
+    //                 $("#loginForm").submit();
+    //             }
+    //         }
+    //     });
+    // });
   </script>
 </body>
 </html>
