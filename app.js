@@ -60,11 +60,9 @@ function send (url, ctx) {
                     data: err
                 });
             } else {
-                resolve({
-                    success: true,
-                    data: body,
-                    setCookie: httpResponse.headers['set-cookie']
-                });
+                let result = JSON.parse(body).data;
+                result.setCookie = httpResponse.headers['set-cookie'];
+                resolve(result);
             }
         });
     }).then(rs=>rs).catch(e=>e);
@@ -77,9 +75,21 @@ router.post('/cms/login', async function(ctx){
     } else {
         var response = await send('http://localhost:8081/cms/login', ctx);
         if(response.success){
-            ctx.session.user = response.data;
+            ctx.session.user = Object.assign({},response.user);
             ctx.session.user.mm = ctx.request.body.remember || "0";
-            ctx.headers['set-cookie'] = response.setCookie;
+            var exdate=new Date()
+            exdate.setDate(exdate.getDate()+5)
+            response.setCookie.forEach(c=>{
+                ctx.cookies.set(
+                    c.split(';')[0].split('=')[0],
+                    c.split(';')[0].split('=')[1],
+                    {
+                        expires: exdate,
+                        secure: false,
+                        signed: false
+                    }
+                );
+            });
             ctx.redirect('/cms');
         } else {
             ctx.redirect('/cms/login', {msg: '登录失败'});
@@ -123,4 +133,4 @@ app.use(render);
 app.use(router.routes());
 
 // listen
-if (!module.parent) app.listen(2999);
+if (!module.parent) app.listen(3000);
