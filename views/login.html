@@ -82,7 +82,7 @@
         e.preventDefault();
         e.stopPropagation();
         $.ajax({
-            url:"http://localhost:8081/cms/login",
+            url:"http://www.mykrystal.com/cms/login",
             method:"POST",
             // data:JSON.stringify({username:"juan-manuel@fangio.com",password:"aa"}),//错误密码
             data:JSON.stringify({username:$("#username").val(),password:$("password").val()}),//正确密码
