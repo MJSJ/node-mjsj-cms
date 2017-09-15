@@ -73,7 +73,7 @@ router.post('/cms/login', async function(ctx){
     if (ctx.session.user){
         ctx.redirect('/cms');
     } else {
-        var response = await send('http://localhost:8081/cms/login', ctx);
+        var response = await send('http://localhost:8081/api/login', ctx);
         if(response.success){
             ctx.session.user = Object.assign({},response.user);
             ctx.session.user.mm = ctx.request.body.remember || "0";
