@@ -76,6 +76,7 @@ router.post('/cms/login', async function(ctx){
         var response = await send('http://localhost:8081/api/login', ctx);
         if(response.success){
             ctx.session.user = Object.assign({},response.user);
+            ctx.session.__csrf = response._csrf;
             ctx.session.user.mm = ctx.request.body.remember || "0";
             var exdate=new Date()
             exdate.setDate(exdate.getDate()+5)
@@ -103,7 +104,7 @@ router.get('/cms/login', async function(ctx) {
         ctx.redirect('/cms');
     } else {
         ctx.cookies.set('koa.sid', +new Date());
-        await ctx.render('./login', {_csrf: ctx.csrf, u: null});
+        await ctx.render('./login', {_csrf: ctx.session.__csrf, u: null});
     }
 });
 
@@ -115,7 +116,7 @@ router.get('/cms', async function(ctx) {
             ctx.session.user = null;
         }
         delete u.mm;
-        await ctx.render('./page/cms', {_csrf: ctx.csrf, u: u});
+        await ctx.render('./page/cms', {_csrf: ctx.session.__csrf, u: u});
     } else {
         ctx.redirect('/cms/login');
     }
@@ -124,7 +125,7 @@ router.get('/cms', async function(ctx) {
 // 页面router
 for (let i in conf){
     router.get(i, async function(ctx) {
-        await ctx.render(conf[i], {_csrf: ctx.csrf, u: null});
+        await ctx.render(conf[i], {_csrf: ctx.session.__csrf, u: null});
     });
 }
 
