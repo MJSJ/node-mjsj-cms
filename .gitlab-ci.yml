@@ -1,0 +1,20 @@
+image: node:8.2.0
+
+stages:
+  - build
+
+before_script:
+    - pwd
+    - cp -rf /builds/f4d88baa/0/MJSJ/node-mjsj-cms /services/static/node-mjsj-cms
+    - cd /services/node-mjsj-cms
+    - ls -lf
+# 编译
+build:
+  stage: build
+  tags:
+    - node
+  only:
+    - develop
+    - master
+  script:
+    - pm2 restart all
